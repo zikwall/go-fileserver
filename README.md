@@ -3,6 +3,14 @@
   <h5>Simple, Powerful and Productive file server written in Go</h5>
 </div>
 
+### Options
+
+- __token__: With this parameter, you can protect yourself from unauthorized access, it can be empty, if empty-it is generated automatically
+  - Query param `?token=<token>`
+  - Request header `Authorization: Bearer <token>`
+  - Form value `token=<token>`
+- __enable-secure__: Enabling and disabling access token protection - `true/false`
+
 ### How to use?
 
 #### with single file
