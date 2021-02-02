@@ -15,6 +15,6 @@
 # vendor/
 
 .idea
-./bin/run_local_*
-./tmp/*
-./tmp/!.gitkeep
+bin/run_local_*
+tmp/*
+tmp/!.gitkeep
