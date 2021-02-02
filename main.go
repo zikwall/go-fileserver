@@ -9,6 +9,7 @@ import (
 	"github.com/zikwall/go-fileserver/src/middlewares"
 	"log"
 	"os"
+	"path/filepath"
 )
 
 func main() {
@@ -62,11 +63,17 @@ func main() {
 			app.Use(middlewares.WithProtection(token))
 		}
 
+		absolutePath, err := filepath.Abs(c.String("root-file-directory"))
+
+		if err != nil {
+			return err
+		}
+
 		action := actions.ActionProvider{
 			FilenameKey:       "filename",
 			FormFilesKey:      "files[]",
 			FormFileKey:       "file",
-			RootFileDirectory: c.String("root-file-directory"),
+			RootFileDirectory: absolutePath,
 		}
 
 		app.Get("/:filename", action.PullFile)
