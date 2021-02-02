@@ -78,12 +78,12 @@ func main() {
 
 		app.Get("/:filename", action.PullFile)
 
-		app.Put("/:filename",
+		app.Put("/:filename?",
 			middlewares.WithPushable(),
 			action.PushFile,
 		)
 
-		app.Post("/:filename",
+		app.Post("/:filename?",
 			middlewares.WithPushable(),
 			action.PushFile,
 		)
