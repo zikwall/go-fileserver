@@ -64,4 +64,4 @@ $ docker run -d -p 1337:1337 \
 
 ### Tests
 
-= `$ go test -v ./...`
+- `$ go test -v ./...`
