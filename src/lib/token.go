@@ -1,4 +1,4 @@
-package main
+package lib
 
 import (
 	"crypto/rand"
@@ -6,7 +6,7 @@ import (
 )
 
 // todo use more powerful protection mechanism
-func generateToken() (string, error) {
+func GenerateToken() (string, error) {
 	b := make([]byte, 8)
 
 	if _, err := rand.Read(b); err != nil {

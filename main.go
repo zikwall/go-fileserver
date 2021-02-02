@@ -49,7 +49,7 @@ func main() {
 			token := c.String("token")
 
 			if token == "" {
-				generated, err := generateToken()
+				generated, err := lib.GenerateToken()
 
 				if err != nil {
 					return err
