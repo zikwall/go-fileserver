@@ -2,7 +2,6 @@ package actions
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/zikwall/go-fileserver/src/lib"
@@ -16,9 +15,9 @@ func (a *ActionProvider) PushFile(ctx *fiber.Ctx) error {
 	filename, ok := ctx.Locals("filename").(string)
 
 	if !ok {
-		return ctx.Status(500).JSON(fiber.Map{
-			"status":  false,
-			"message": fmt.Errorf("Can't push file: %v", filename),
+		return ctx.Status(500).JSON(Response{
+			Status:  false,
+			Message: fmt.Sprintf("Can't push file: %v", filename),
 		})
 	}
 
@@ -31,15 +30,15 @@ func (a *ActionProvider) PushFile(ctx *fiber.Ctx) error {
 		// ```
 		if file, err := ctx.FormFile(a.FormFileKey); err == nil {
 			if err := ctx.SaveFile(file, fmt.Sprintf("%s/%s", a.RootFileDirectory, file.Filename)); err != nil {
-				return ctx.Status(500).JSON(fiber.Map{
-					"status":  false,
-					"message": fmt.Errorf("Failed save file: %s with error: %s", file.Filename, err),
+				return ctx.Status(500).JSON(Response{
+					Status:  false,
+					Message: fmt.Sprintf("Failed save `%s`, error: %s", file.Filename, err),
 				})
 			}
 
-			return ctx.JSON(fiber.Map{
-				"status":  true,
-				"message": "Successfully upload file!",
+			return ctx.JSON(Response{
+				Status:  true,
+				Message: "Successfully upload file!",
 			})
 		}
 
@@ -52,35 +51,35 @@ func (a *ActionProvider) PushFile(ctx *fiber.Ctx) error {
 		form, err := ctx.MultipartForm()
 
 		if err != nil {
-			return ctx.Status(500).JSON(fiber.Map{
-				"status":  false,
-				"message": fmt.Errorf("Failed parse multipart/form-data, error: %s", err).Error(),
+			return ctx.Status(500).JSON(Response{
+				Status:  false,
+				Message: err.Error(),
 			})
 		}
 
 		files, ok := form.File[a.FormFilesKey]
 
 		if !ok {
-			return ctx.Status(500).JSON(fiber.Map{
-				"status":  false,
-				"message": errors.New("Failed parse multipart/form-data: not contains `files[]` field").Error(),
+			return ctx.Status(500).JSON(Response{
+				Status:  false,
+				Message: "Failed parse multipart/form-data: not contains `files[]` field",
 			})
 		}
 
 		for _, file := range files {
-			fmt.Println(file.Filename, file.Size, file.Header["Content-Type"][0])
+			filepath := fmt.Sprintf("%s/%s", a.RootFileDirectory, file.Filename)
 
-			if err := ctx.SaveFile(file, fmt.Sprintf("%s/%s", a.RootFileDirectory, file.Filename)); err != nil {
-				return ctx.Status(500).JSON(fiber.Map{
-					"status":  false,
-					"message": fmt.Errorf("Failed save file: %s wit error: %s", file.Filename, err).Error(),
+			if err := ctx.SaveFile(file, filepath); err != nil {
+				return ctx.Status(500).JSON(Response{
+					Status:  false,
+					Message: fmt.Sprintf("Failed save `%s`, error: %s", file.Filename, err),
 				})
 			}
 		}
 
-		return ctx.JSON(fiber.Map{
-			"status":  true,
-			"message": "Successfully upload all files!",
+		return ctx.JSON(Response{
+			Status:  true,
+			Message: "Successfully upload all files!",
 		})
 	}
 
@@ -102,9 +101,9 @@ func (a *ActionProvider) PushFile(ctx *fiber.Ctx) error {
 	}()
 
 	if err != nil {
-		return ctx.Status(500).JSON(fiber.Map{
-			"status":  false,
-			"message": err.Error(),
+		return ctx.Status(500).JSON(Response{
+			Status:  false,
+			Message: err.Error(),
 		})
 	}
 
@@ -112,9 +111,9 @@ func (a *ActionProvider) PushFile(ctx *fiber.Ctx) error {
 	_, err = io.Copy(tempFile, reader)
 
 	if err != nil {
-		return ctx.Status(500).JSON(fiber.Map{
-			"status":  false,
-			"message": err.Error(),
+		return ctx.Status(500).JSON(Response{
+			Status:  false,
+			Message: err.Error(),
 		})
 	}
 
@@ -124,15 +123,17 @@ func (a *ActionProvider) PushFile(ctx *fiber.Ctx) error {
 		lib.Warning(err)
 	}
 
-	if err := os.Rename(tempFile.Name(), fmt.Sprintf("%s/%s", a.RootFileDirectory, filename)); err != nil {
-		return ctx.Status(500).JSON(fiber.Map{
-			"status":  false,
-			"message": err.Error(),
+	filepath := fmt.Sprintf("%s/%s", a.RootFileDirectory, filename)
+
+	if err := os.Rename(tempFile.Name(), filepath); err != nil {
+		return ctx.Status(500).JSON(Response{
+			Status:  false,
+			Message: err.Error(),
 		})
 	}
 
-	return ctx.JSON(fiber.Map{
-		"status":  true,
-		"message": "Successfully upload file!",
+	return ctx.JSON(Response{
+		Status:  true,
+		Message: "Successfully upload file!",
 	})
 }
