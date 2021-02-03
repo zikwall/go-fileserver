@@ -10,18 +10,18 @@ func (a *ActionProvider) PullFile(ctx *fiber.Ctx) error {
 	filename, ok := ctx.Locals(a.FilenameKey).(string)
 
 	if !ok {
-		return ctx.Status(500).JSON(fiber.Map{
-			"status":  false,
-			"message": fmt.Errorf("Can't find file: %v", filename).Error(),
+		return ctx.Status(500).JSON(Response{
+			Status:  false,
+			Message: fmt.Sprintf("Can't find file: %v", filename),
 		})
 	}
 
 	file := fmt.Sprintf("%s/%s", a.RootFileDirectory, filename)
 
 	if !lib.Exists(file) {
-		return ctx.Status(404).JSON(fiber.Map{
-			"status":  false,
-			"message": fmt.Sprintf("File not found: %s", filename),
+		return ctx.Status(404).JSON(Response{
+			Status:  false,
+			Message: fmt.Sprintf("File not found: %s", filename),
 		})
 	}
 
