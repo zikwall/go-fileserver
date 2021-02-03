@@ -9,7 +9,7 @@
   - Query param `?token=<token>`
   - Request header `Authorization: Bearer <token>`
   - Form value `token=<token>`
-- __enable-secure__: Enabling and disabling access token protection - `true/false`
+- __enable-secure__: Enabling and disabling access token protection - `true` or `false`, default `false`
 
 ### How to use?
 
@@ -50,7 +50,7 @@ To view the files just click on the link with the domain, and the file name at t
 ### How to run?
 
 - `$ git clone https://github.com/zikwall/go-fileserver`
-- `$ go run . --bind-address localhost:1337 --token 123456`
+- `$ go run . --bind-address localhost:1337 --token 123456 --enable-secure`
 
 #### with Docker
 

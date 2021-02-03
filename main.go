@@ -36,7 +36,7 @@ func main() {
 				Name:    "enable-secure",
 				Usage:   "Enabling/disabling token protection",
 				EnvVars: []string{"ENABLE_SECURE"},
-				Value:   true,
+				Value:   false,
 			},
 		},
 	}
