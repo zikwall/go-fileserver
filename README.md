@@ -1,3 +1,5 @@
+[![build](https://github.com/zikwall/go-fileserver/workflows/tests/badge.svg)](https://github.com/zikwall/go-fileserver/actions)
+
 <div align="center">
   <h1>Go-fileserver</h1>
   <h5>Simple, Powerful and Productive file server written in Go</h5>
