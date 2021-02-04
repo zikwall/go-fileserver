@@ -8,9 +8,10 @@
 ### Options
 
 - __token__: With this parameter, you can protect yourself from unauthorized access, it can be empty, if empty-it is generated automatically
-  - Request header `Authorization: Bearer <token>`  
-  - Query param `?token=<token>`
-  - Form value `token=<token>`
+  - [x] Request header `Authorization: Bearer <token>`  
+  - [x] Query param `?token=<token>`
+  - [x] Form value `token=<token>`
+  
   
   > The list is arranged in order of priority of token processing
 
