@@ -77,6 +77,7 @@ func main() {
 		}
 
 		app.Get("/:filename", action.PullFile)
+		app.Delete("/:filename", action.DeleteFile)
 
 		app.Put("/:filename?",
 			middlewares.WithPushable(),
