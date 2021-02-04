@@ -1,29 +1,18 @@
 package actions
 
 import (
-	"fmt"
 	"github.com/gofiber/fiber/v2"
-	"github.com/zikwall/go-fileserver/src/lib"
 )
 
 func (a *ActionProvider) PullFile(ctx *fiber.Ctx) error {
-	filename, ok := ctx.Locals(a.FilenameKey).(string)
+	filepath, _, code, err := a.GetFilepath(ctx)
 
-	if !ok {
-		return ctx.Status(500).JSON(Response{
+	if err != nil {
+		return ctx.Status(code).JSON(Response{
 			Status:  false,
-			Message: fmt.Sprintf("Can't find file: %v", filename),
+			Message: err.Error(),
 		})
 	}
 
-	file := fmt.Sprintf("%s/%s", a.RootFileDirectory, filename)
-
-	if !lib.Exists(file) {
-		return ctx.Status(404).JSON(Response{
-			Status:  false,
-			Message: fmt.Sprintf("File not found: %s", filename),
-		})
-	}
-
-	return ctx.SendFile(file)
+	return ctx.SendFile(filepath)
 }

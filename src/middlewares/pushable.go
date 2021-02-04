@@ -14,6 +14,5 @@ func WithPushable() fiber.Handler {
 			"status":  false,
 			"message": "Invalid http request method",
 		})
-
 	}
 }
