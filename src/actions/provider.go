@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/zikwall/go-fileserver/src/lib"
+	"path"
 )
 
 type ActionProvider struct {
@@ -25,11 +26,11 @@ func (a ActionProvider) GetFilepath(ctx *fiber.Ctx) (string, string, int, error)
 		return "", "", 500, fmt.Errorf("Can't find file: %v", filename)
 	}
 
-	file := fmt.Sprintf("%s/%s", a.RootFileDirectory, filename)
+	filepath := path.Join(a.RootFileDirectory, filename)
 
-	if !lib.Exists(file) {
+	if !lib.Exists(filepath) {
 		return "", "", 404, fmt.Errorf("File not found: %s", filename)
 	}
 
-	return file, filename, 200, nil
+	return filepath, filename, 200, nil
 }
