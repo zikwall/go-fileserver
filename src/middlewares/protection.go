@@ -2,7 +2,9 @@ package middlewares
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/zikwall/go-fileserver/src/lib"
 	"strings"
 )
 
@@ -27,6 +29,13 @@ func authHeaderToken(header string) (string, bool) {
 }
 
 func WithProtection(secureToken string) fiber.Handler {
+	if secureToken == "" {
+		generated, _ := lib.GenerateToken()
+		secureToken = generated
+
+		lib.Info(fmt.Sprintf("Generate token: %s", generated))
+	}
+
 	return func(ctx *fiber.Ctx) error {
 		token, ok := authHeaderToken(ctx.Get(AuthHeader))
 
