@@ -7,23 +7,69 @@
 
 ### Options
 
+| Name                                | Env                     | 
+| :---------------------------------: | :---------------------: |
+| `bind-address` (`0.0.0.0:1337`)     |  `BIND_ADDRESS`         |
+| `token`                             |  `TOKEN`                |
+| `root-file-directory` (`./tmp`)     |  `ROOT_FILE_DIRECTORY`  |
+| `enable-secure` (`false`)           |  `ENABLE_SECURE`        |
+| `secure-type` (`0`)                 |  `SECURE_TYPE`          |
+| `users` (`./tmp`)                   |  `USERS`                |
+
+### Authorization types
+
+- [x] Simple token auth (default)
+
+```shell
+--secure-type 0
+--enable-secure
+--token='token_here'
+```
+
 - __token__: With this parameter, you can protect yourself from unauthorized access, it can be empty, if empty-it is generated automatically
 
-  - [x] Request header `Authorization: Bearer <token>`  
-  - [x] Query param `?token=<token>`
-  - [x] Form value `token=<token>`
-  
-- __enable-secure__: Enabling and disabling access token protection - `true` or `false`, default `false`
+From              | Usage 
+---               | --- | 
+Request header    | `Authorization: Bearer <token>`
+Query param       | `?token=<token>` 
+Form value        | `token=<token>`
+
+- [x] HTTP Basic auth
+
+```shell
+--secure-type 1
+--enable-secure
+--users='qwx:1337'
+--users='qwx2:13372'
+--users='qwx3:13373'
+```
+
+- [ ] JWT based auth
+
+```shell
+// todo
+```
 
 ### How to use?
 
-#### with single file
+#### with single file (basic requests)
 
 ```shell
 $ curl -i -X POST \
     -H "Content-Type: multipart/form-data" \
     -F "file=@.gitignore" \
     http://localhost:1337?token=123456
+```
+
+```shell
+$ curl -i -X POST \
+    -H "Content-Type: multipart/form-data" \
+    -F "file=@.gitignore" \
+    http://qwx:1337@localhost:1337
+```
+
+```shell
+// todo
 ```
 
 #### with multiple files
