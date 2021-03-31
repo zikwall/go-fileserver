@@ -1,11 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/urfave/cli/v2"
 	"github.com/zikwall/go-fileserver/src/actions"
-	"github.com/zikwall/go-fileserver/src/lib"
+	"github.com/zikwall/go-fileserver/src/constants"
 	"github.com/zikwall/go-fileserver/src/middlewares"
 	"log"
 	"os"
@@ -38,6 +37,17 @@ func main() {
 				EnvVars: []string{"ENABLE_SECURE"},
 				Value:   false,
 			},
+			&cli.IntFlag{
+				Name:    "secure-type",
+				Usage:   "Token=0, Basic auth=1 or JWT=2",
+				EnvVars: []string{"SECURE_TYPE"},
+				Value:   0,
+			},
+			&cli.StringSliceFlag{
+				Name:    "users",
+				Usage:   "Users, format username:password",
+				EnvVars: []string{"USERS"},
+			},
 		},
 	}
 
@@ -46,21 +56,16 @@ func main() {
 		app.Use(middlewares.WithFilename())
 
 		if c.Bool("enable-secure") {
-			token := c.String("token")
-
-			if token == "" {
-				generated, err := lib.GenerateToken()
-
-				if err != nil {
-					return err
-				}
-
-				token = generated
-
-				lib.Info(fmt.Sprintf("TOKEN: %s", generated))
+			switch c.Int("secure-type") {
+			case constants.TypeToken:
+				app.Use(middlewares.WithProtection(c.String("token")))
+			case constants.TypeBasic:
+				app.Use(middlewares.WithBasicAuth(c.StringSlice("users")...))
+			case constants.TypeJWT:
+				fallthrough
+			default:
+				log.Fatalf("Unsupported secure type: %d", c.Int("secure-type"))
 			}
-
-			app.Use(middlewares.WithProtection(token))
 		}
 
 		absolutePath, err := filepath.Abs(c.String("root-file-directory"))
