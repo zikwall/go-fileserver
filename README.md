@@ -95,7 +95,11 @@ $ curl -i -X POST \
 
 To view the files just click on the link with the domain, and the file name at the end: 
 
+**Simple**
 > http://localhost:1337/.gitignore?token=123456
+
+**HTTP Basic**
+> http://qwx:1337@localhost:1337/.gitignore
 
 ### How to run?
 
