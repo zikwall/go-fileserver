@@ -48,6 +48,24 @@ func main() {
 				Usage:   "Users, format username:password",
 				EnvVars: []string{"USERS"},
 			},
+			&cli.BoolFlag{
+				Name:    "enable-tsl",
+				Usage:   "Enabling/disabling SSL protection",
+				EnvVars: []string{"ENABLE_TSL"},
+				Value:   false,
+			},
+			&cli.StringFlag{
+				Name:    "tsl-cert-file",
+				Usage:   "",
+				EnvVars: []string{"TSL_CERT_FILE"},
+				Value:   "./tmp/ssl.cert",
+			},
+			&cli.StringFlag{
+				Name:    "tsl-key-file",
+				Usage:   "",
+				EnvVars: []string{"TSL_KEY_FILE"},
+				Value:   "./tmp/ssl.key",
+			},
 		},
 	}
 
@@ -96,8 +114,20 @@ func main() {
 		)
 
 		go func() {
-			if err := app.Listen(c.String("bind-address")); err != nil {
-				log.Fatal(err)
+			if c.Bool("enable-tsl") {
+				err := app.ListenTLS(
+					c.String("bind-address"),
+					c.String("tsl-cert-file"),
+					c.String("tsl-key-file"),
+				)
+
+				if err != nil {
+					log.Fatal(err)
+				}
+			} else {
+				if err := app.Listen(c.String("bind-address")); err != nil {
+					log.Fatal(err)
+				}
 			}
 		}()
 
