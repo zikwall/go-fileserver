@@ -109,11 +109,17 @@ To view the files just click on the link with the domain, and the file name at t
 #### with Docker
 
 ```shell
-$ docker run -d -p 1337:1337 \
-    -v $HOME/tmp:/app/tmp \
-    -e BIND_ADDRESS='0.0.0.0:1337' \
-    -e TOKEN='123456' \
-    --name go-fileserver-example qwx1337/go-fileserver:latest
+$ docker run -d -p 1338:1338 \
+  -e BIND_ADDRESS='0.0.0.0:1338' \
+  -e SECURE_TYPE=1 \
+  -e USERS='username:password' \
+  -e ENABLE_SECURE='true' \
+  -e ENABLE_TSL='true' \
+  -e TSL_CERT_FILE='/mnt/ssl.cert' \
+  -e TSL_KEY_FILE='/mnt/ssl.key' \
+  -v $HOME/tmp:/app/tmp \
+  -v $PWD:/mnt \
+  --name go-fileserver-example qwx1337/go-fileserver:latest
 ```
 
 ### Tests
