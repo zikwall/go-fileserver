@@ -55,19 +55,6 @@ func main() {
 		app := fiber.New()
 		app.Use(middlewares.WithFilename())
 
-		if c.Bool("enable-secure") {
-			switch c.Int("secure-type") {
-			case constants.TypeToken:
-				app.Use(middlewares.WithProtection(c.String("token")))
-			case constants.TypeBasic:
-				app.Use(middlewares.WithBasicAuth(c.StringSlice("users")...))
-			case constants.TypeJWT:
-				fallthrough
-			default:
-				log.Fatalf("Unsupported secure type: %d", c.Int("secure-type"))
-			}
-		}
-
 		absolutePath, err := filepath.Abs(c.String("root-file-directory"))
 
 		if err != nil {
@@ -82,6 +69,20 @@ func main() {
 		}
 
 		app.Get("/:filename", action.PullFile)
+
+		if c.Bool("enable-secure") {
+			switch c.Int("secure-type") {
+			case constants.TypeToken:
+				app.Use(middlewares.WithProtection(c.String("token")))
+			case constants.TypeBasic:
+				app.Use(middlewares.WithBasicAuth(c.StringSlice("users")...))
+			case constants.TypeJWT:
+				fallthrough
+			default:
+				log.Fatalf("Unsupported secure type: %d", c.Int("secure-type"))
+			}
+		}
+
 		app.Delete("/:filename", action.DeleteFile)
 
 		app.Put("/:filename?",
