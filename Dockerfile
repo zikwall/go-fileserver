@@ -1,4 +1,6 @@
 FROM golang:alpine as app-builder
+RUN apk update
+RUN apk add --no-cache bash
 RUN mkdir -p /go/tmp/app
 WORKDIR /go/tmp/app
 COPY . .
