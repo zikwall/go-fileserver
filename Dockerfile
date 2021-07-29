@@ -13,7 +13,5 @@ FROM scratch
 COPY --from=alpine:latest /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=app-builder /go/tmp/app/tmp /go/src/app/tmp
 COPY --from=app-builder /go/tmp/app/main /go/src/app/
-COPY --from=app-builder /go/tmp/app/ssl.key /go/src/app/
-COPY --from=app-builder /go/tmp/app/ssl.cert /go/src/app/
 WORKDIR /go/src/app/
 CMD ["/go/src/app/main"]
